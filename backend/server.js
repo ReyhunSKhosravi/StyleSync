@@ -3,6 +3,12 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { analyzePersonality, getStyleRecommendations } from './services/improvedPersonalityService.js';
 import { questions } from './data/questions.js';
+import { 
+  analyzeTwitterProfile, 
+  mergeTwitterAnalysisWithTest,
+  generatePersonalizedTips,
+  suggestBrandsBasedOnTwitter 
+} from './services/twitterAnalysisService.js';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -105,21 +111,56 @@ const oldQuestions = [
     }
   ];
 
-// تحلیل شخصیت و ارائه پیشنهادات
-app.post('/api/analyze', (req, res) => {
+// تحلیل شخصیت و ارائه پیشنهادات (با تحلیل توییتر)
+app.post('/api/analyze', async (req, res) => {
   try {
-    const { answers } = req.body;
+    const { answers, twitterUsername } = req.body;
     
     if (!answers || !Array.isArray(answers)) {
       return res.status(400).json({ error: 'پاسخ‌ها نامعتبر است' });
     }
 
-    const personality = analyzePersonality(answers);
+    // تحلیل تست شخصیت
+    let personality = analyzePersonality(answers);
+    
+    // اگر یوزرنیم توییتر داده شده، تحلیل توییتر
+    let twitterAnalysis = null;
+    let enhancedRecommendations = null;
+    
+    if (twitterUsername && twitterUsername.trim()) {
+      console.log(`🐦 تحلیل توییتر برای: @${twitterUsername}`);
+      
+      try {
+        twitterAnalysis = await analyzeTwitterProfile(twitterUsername);
+        
+        if (twitterAnalysis) {
+          // ترکیب نتایج توییتر با تست
+          personality = mergeTwitterAnalysisWithTest(personality, twitterAnalysis);
+          
+          // تولید نکات شخصی‌سازی شده
+          const personalizedTips = generatePersonalizedTips(twitterAnalysis);
+          const suggestedBrands = suggestBrandsBasedOnTwitter(twitterAnalysis);
+          
+          enhancedRecommendations = {
+            personalizedTips,
+            suggestedBrands,
+            twitterKeywords: twitterAnalysis.keywords,
+            styleIndicators: twitterAnalysis.styleIndicators
+          };
+        }
+      } catch (twitterError) {
+        console.error('خطا در تحلیل توییتر (ادامه با تحلیل تست):', twitterError);
+        // اگر توییتر خطا داد، با تحلیل تست ادامه می‌دهیم
+      }
+    }
+
     const recommendations = getStyleRecommendations(personality);
 
     res.json({
       personality,
-      recommendations
+      recommendations,
+      twitterEnhanced: !!twitterAnalysis,
+      enhancedRecommendations
     });
   } catch (error) {
     console.error('Error analyzing personality:', error);

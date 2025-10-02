@@ -10,6 +10,8 @@ function Quiz() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [selectedOption, setSelectedOption] = useState(null)
+  const [showTwitterInput, setShowTwitterInput] = useState(false)
+  const [twitterUsername, setTwitterUsername] = useState('')
 
   useEffect(() => {
     fetchQuestions()
@@ -51,7 +53,8 @@ function Quiz() {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
     } else {
-      submitAnswers(newAnswers)
+      // نمایش فرم توییتر بعد از آخرین سوال
+      setShowTwitterInput(true)
     }
   }
 
@@ -64,15 +67,32 @@ function Quiz() {
     }
   }
 
-  const submitAnswers = async (finalAnswers) => {
+  const submitAnswers = async (finalAnswers = answers) => {
     setSubmitting(true)
     try {
-      const response = await axios.post('/api/analyze', { answers: finalAnswers })
+      const payload = { 
+        answers: finalAnswers,
+        twitterUsername: twitterUsername || null
+      }
+      
+      const response = await axios.post('/api/analyze', payload)
       navigate('/results', { state: { data: response.data } })
     } catch (error) {
       console.error('Error submitting answers:', error)
       alert('خطا در تحلیل نتایج')
       setSubmitting(false)
+    }
+  }
+
+  const handleSkipTwitter = () => {
+    submitAnswers(answers)
+  }
+
+  const handleSubmitWithTwitter = () => {
+    if (twitterUsername.trim()) {
+      submitAnswers(answers)
+    } else {
+      alert('لطفا یوزرنیم توییتر خود را وارد کنید یا Skip کنید')
     }
   }
 
@@ -120,6 +140,85 @@ function Quiz() {
             >
               بازگشت به صفحه اصلی
             </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // نمایش فرم توییتر
+  if (showTwitterInput) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="max-w-2xl w-full">
+          <div className="card scale-in text-center">
+            <div className="mb-6">
+              <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center shadow-2xl">
+                <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                </svg>
+              </div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-3">
+                تحلیل بیشتر با توییتر 🐦
+              </h2>
+              <p className="text-gray-600 text-lg mb-2">
+                برای پیشنهادات دقیق‌تر، یوزرنیم توییتر خود را وارد کنید
+              </p>
+              <p className="text-sm text-gray-500">
+                توییت‌های شما را تحلیل می‌کنیم تا استایل واقعی‌تر شما را بفهمیم
+              </p>
+            </div>
+
+            <div className="mb-8">
+              <div className="relative">
+                <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl">
+                  @
+                </span>
+                <input
+                  type="text"
+                  value={twitterUsername}
+                  onChange={(e) => setTwitterUsername(e.target.value.replace('@', ''))}
+                  placeholder="username (بدون @)"
+                  className="w-full pr-12 pl-4 py-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-300 text-lg"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSubmitWithTwitter()
+                    }
+                  }}
+                />
+              </div>
+              <p className="text-xs text-gray-400 mt-2 text-right">
+                مثال: elonmusk یا taylorswift13
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={handleSkipTwitter}
+                className="btn-secondary"
+              >
+                <svg className="inline-block w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+                رد کردن
+              </button>
+              <button
+                onClick={handleSubmitWithTwitter}
+                disabled={!twitterUsername.trim()}
+                className={`btn-primary ${!twitterUsername.trim() ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                تحلیل با توییتر
+                <svg className="inline-block w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="mt-6 p-4 bg-blue-50 rounded-xl">
+              <p className="text-sm text-blue-800">
+                <strong>🔒 حریم خصوصی:</strong> فقط توییت‌های عمومی شما را می‌خوانیم و هیچ اطلاعاتی ذخیره نمی‌شود
+              </p>
+            </div>
           </div>
         </div>
       </div>

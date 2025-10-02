@@ -24,7 +24,7 @@ function Results() {
     )
   }
 
-  const { personality, recommendations } = data
+  const { personality, recommendations, twitterEnhanced, enhancedRecommendations } = data
 
   return (
     <div className="min-h-screen p-6 pb-20">
@@ -42,6 +42,14 @@ function Results() {
           <p className="text-xl text-gray-600">
             استایل مناسب برای شخصیت شما آماده است!
           </p>
+          {twitterEnhanced && (
+            <div className="mt-4 inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full">
+              <svg className="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+              </svg>
+              تحلیل شده با توییتر - پیشنهادات شخصی‌سازی‌تر
+            </div>
+          )}
         </div>
 
         {/* Personality Type */}
@@ -140,6 +148,54 @@ function Results() {
             ))}
           </div>
         </div>
+
+        {/* Twitter Enhanced Tips */}
+        {twitterEnhanced && enhancedRecommendations && enhancedRecommendations.personalizedTips && enhancedRecommendations.personalizedTips.length > 0 && (
+          <div className="card mb-8 slide-in">
+            <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+              <svg className="w-8 h-8 ml-3 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+              </svg>
+              نکات شخصی‌سازی شده از توییتر شما
+            </h3>
+            <div className="space-y-4">
+              {enhancedRecommendations.personalizedTips.map((tip, index) => (
+                <div
+                  key={index}
+                  className="flex items-start p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl hover:shadow-md transition-shadow duration-300 border-r-4 border-blue-500"
+                >
+                  <span className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold ml-4">
+                    🐦
+                  </span>
+                  <p className="text-gray-700 text-lg">{tip}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Suggested Brands from Twitter */}
+        {twitterEnhanced && enhancedRecommendations && enhancedRecommendations.suggestedBrands && enhancedRecommendations.suggestedBrands.length > 0 && (
+          <div className="card mb-8 fade-in">
+            <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+              <svg className="w-8 h-8 ml-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              برندهای پیشنهادی براساس توییتر شما
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              {enhancedRecommendations.suggestedBrands.map((brand, index) => (
+                <div
+                  key={index}
+                  className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl hover:shadow-lg transition-shadow duration-300 border-2 border-purple-200"
+                >
+                  <h4 className="font-bold text-lg text-gray-800 mb-2">🏷️ {brand.name}</h4>
+                  <p className="text-sm text-gray-600">{brand.reason}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Tips */}
         <div className="card mb-8 fade-in">
