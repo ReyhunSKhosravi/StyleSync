@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import ImageBanner from '../components/ImageBanner'
 
 function Results() {
   const location = useLocation()
@@ -25,15 +26,15 @@ function Results() {
     )
   }
 
-  const { personality, twitterEnhanced, enhancedRecommendations, glossary } = data
+  const { personality, twitterEnhanced, enhancedRecommendations, glossary, images } = data
 
   const tabs = [
     { id: 'overview', name: 'خلاصه', icon: '📊' },
     { id: 'colors', name: 'رنگ‌ها', icon: '🎨' },
     { id: 'clothing', name: 'لباس', icon: '👗' },
     { id: 'hair', name: 'مو', icon: '💇‍♀️' },
-    { id: 'makeup', name: 'آرایش', icon: '💄' },
-    { id: 'hijab', name: 'حجاب', icon: '🧕' },
+    ...(personality.makeup ? [{ id: 'makeup', name: 'آرایش', icon: '💄' }] : []),
+    ...(personality.hijab ? [{ id: 'hijab', name: 'حجاب', icon: '🧕' }] : []),
     { id: 'accessories', name: 'اکسسوری', icon: '👜' },
     { id: 'tips', name: 'نکات', icon: '💡' }
   ]
@@ -61,6 +62,15 @@ function Results() {
             </div>
           )}
         </div>
+
+        {/* Images Banner */}
+        {images && images.length > 0 && (
+          <ImageBanner
+            images={images}
+            title="ایده‌های تصویری استایل شما"
+            subtitle="تصاویر الهام‌بخش براساس شخصیت و پالت رنگ شما"
+          />
+        )}
 
         {/* Tabs */}
         <div className="mb-8 overflow-x-auto">

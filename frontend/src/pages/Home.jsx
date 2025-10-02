@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import ImageBanner from '../components/ImageBanner'
 
 function Home() {
   const navigate = useNavigate()
@@ -25,6 +26,18 @@ function Home() {
             با تحلیل شخصیت شما، بهترین پیشنهادات استایل و مد را برای شما انتخاب می‌کنیم
           </p>
         </div>
+
+        {/* Hero Images */}
+        <ImageBanner
+          images={[
+            { url: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=90', alt: 'fashion' },
+            { url: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1400&q=90', alt: 'fashion' },
+            { url: 'https://images.unsplash.com/photo-1537832816519-689ad163238b?auto=format&fit=crop&w=1400&q=90', alt: 'fashion' },
+            { url: 'https://images.unsplash.com/photo-1516826957135-700dedea6985?auto=format&fit=crop&w=1400&q=90', alt: 'fashion' }
+          ]}
+          title="الهام بگیرید"
+          subtitle="تصاویر باکیفیت ادیتوریال برای شروع"
+        />
 
         {/* Main Card */}
         <div className="card scale-in mb-8">

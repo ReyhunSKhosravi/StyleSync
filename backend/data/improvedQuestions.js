@@ -4,6 +4,7 @@ export const improvedQuestions = [
   {
     id: 1,
     question: 'صبح‌ها وقتی از خواب بیدار می‌شوید، اولین فکر شما در مورد پوشش چیست؟',
+    audience: 'all',
     options: [
       { 
         id: 'a', 
@@ -35,6 +36,7 @@ export const improvedQuestions = [
   {
     id: 2,
     question: 'وقتی وارد فروشگاه لباس می‌شوید، به کدام قسمت بیشتر جذب می‌شوید؟',
+    audience: 'all',
     options: [
       { 
         id: 'a', 
@@ -71,6 +73,7 @@ export const improvedQuestions = [
   {
     id: 3,
     question: 'نظر شما در مورد پوشش سر (حجاب/روسری/شال) چیست؟',
+    audience: 'female',
     options: [
       { 
         id: 'a', 
@@ -102,6 +105,7 @@ export const improvedQuestions = [
   {
     id: 4,
     question: 'در مورد آرایش (میکاپ) چه احساسی دارید؟',
+    audience: 'female',
     options: [
       { 
         id: 'a', 
@@ -138,6 +142,7 @@ export const improvedQuestions = [
   {
     id: 5,
     question: 'سبک مورد علاقه شما برای مو چیست؟',
+    audience: 'all',
     options: [
       { 
         id: 'a', 
@@ -175,6 +180,7 @@ export const improvedQuestions = [
     id: 6,
     question: 'کدام دسته از رنگ‌ها بیشتر شما را جذب می‌کند؟',
     explanation: 'این رنگ‌ها برای لباس، اکسسوری و کلی استایل شما مهم هستند',
+    audience: 'all',
     options: [
       { 
         id: 'a', 
@@ -217,6 +223,7 @@ export const improvedQuestions = [
   {
     id: 7,
     question: 'موقع خرید لباس، چه چیزی بیشتر برایتان اهمیت دارد؟',
+    audience: 'all',
     options: [
       { 
         id: 'a', 
@@ -253,6 +260,7 @@ export const improvedQuestions = [
   {
     id: 8,
     question: 'در یک مهمانی یا جمع، چگونه دوست دارید دیده شوید؟',
+    audience: 'all',
     options: [
       { 
         id: 'a', 
@@ -285,6 +293,7 @@ export const improvedQuestions = [
     id: 9,
     question: 'نظر شما درباره اکسسوری (جواهرات، کیف، کفش) چیست؟',
     explanation: 'اکسسوری = وسایل تکمیلی مثل گردنبند، دستبند، ساعت، کیف و ...',
+    audience: 'all',
     options: [
       { 
         id: 'a', 
@@ -321,6 +330,7 @@ export const improvedQuestions = [
   {
     id: 10,
     question: 'وقتی کسی استایل شما را تعریف می‌کند، دوست دارید چه بگوید؟',
+    audience: 'all',
     options: [
       { 
         id: 'a', 
@@ -357,6 +367,7 @@ export const improvedQuestions = [
   {
     id: 11,
     question: 'در مورد طول لباس‌هایتان (دامن، مانتو، پیراهن) چه ترجیحی دارید؟',
+    audience: 'female',
     options: [
       { 
         id: 'a', 
@@ -383,6 +394,7 @@ export const improvedQuestions = [
   {
     id: 12,
     question: 'وقتی عصبانی یا ناراحت هستید، چه می‌پوشید؟',
+    audience: 'all',
     options: [
       { 
         id: 'a', 
@@ -403,6 +415,34 @@ export const improvedQuestions = [
         id: 'd', 
         text: 'هرچی که راحت باشه - مهم نیست چیه', 
         traits: { practical: 3, flexible: 2 } 
+      }
+    ]
+  }
+  ,
+  {
+    id: 13,
+    question: 'برای استایل مردانه‌تان کدام مورد بیشتر به شما نزدیک است؟',
+    audience: 'male',
+    options: [
+      {
+        id: 'a',
+        text: 'کوتاهی کلاسیک (فید کم/متوسط) + ریش مرتب کوتاه',
+        traits: { professional: 2, elegant: 2, classic: 2 }
+      },
+      {
+        id: 'b',
+        text: 'مدل مدرن (کوئیف/پامپادور/کراپ) + ته‌ریش تمیز',
+        traits: { modern: 3, trendy: 2, confident: 1 }
+      },
+      {
+        id: 'c',
+        text: 'موج‌دار یا فر طبیعی + ریش پرپشت مرتب',
+        traits: { natural: 2, creative: 1, bold: 1 }
+      },
+      {
+        id: 'd',
+        text: 'بوزکات یا خیلی کوتاه + بدون ریش',
+        traits: { practical: 3, minimalist: 2, calm: 1 }
       }
     ]
   }

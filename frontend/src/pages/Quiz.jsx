@@ -12,6 +12,12 @@ function Quiz() {
   const [selectedOption, setSelectedOption] = useState(null)
   const [showTwitterInput, setShowTwitterInput] = useState(false)
   const [twitterUsername, setTwitterUsername] = useState('')
+  const [gender, setGender] = useState(null)
+
+  // سوالات فیلترشده بر اساس جنسیت
+  const filteredQuestions = gender
+    ? questions.filter(q => q.audience === 'all' || q.audience === gender)
+    : []
 
   useEffect(() => {
     fetchQuestions()
@@ -50,7 +56,7 @@ function Quiz() {
     setAnswers(newAnswers)
     setSelectedOption(null)
 
-    if (currentQuestion < questions.length - 1) {
+    if (currentQuestion < filteredQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
     } else {
       // نمایش فرم توییتر بعد از آخرین سوال
@@ -72,6 +78,7 @@ function Quiz() {
     try {
       const payload = { 
         answers: finalAnswers,
+        gender,
         twitterUsername: twitterUsername || null
       }
       
@@ -114,6 +121,34 @@ function Quiz() {
           <div className="w-20 h-20 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
           <p className="text-2xl text-gray-700 font-bold mb-2">در حال تحلیل شخصیت شما...</p>
           <p className="text-gray-500">لطفا کمی صبر کنید</p>
+        </div>
+      </div>
+    )
+  }
+
+  // انتخاب جنسیت در ابتدای کار
+  if (!gender) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="max-w-lg w-full">
+          <div className="card text-center">
+            <h2 className="text-3xl font-bold text-gray-800 mb-3">جنسیت شما چیست؟</h2>
+            <p className="text-gray-600 mb-6">برای شخصی‌سازی دقیق‌تر سوالات و پیشنهادات</p>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => { setGender('female'); setCurrentQuestion(0); setAnswers([]); }}
+                className={`p-6 rounded-2xl font-bold text-lg hover:shadow-lg transition ${gender === 'female' ? 'bg-pink-600 text-white' : 'bg-pink-50 text-pink-700 hover:bg-pink-100'}`}
+              >
+                👩 زن
+              </button>
+              <button
+                onClick={() => { setGender('male'); setCurrentQuestion(0); setAnswers([]); }}
+                className={`p-6 rounded-2xl font-bold text-lg hover:shadow-lg transition ${gender === 'male' ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-700 hover:bg-blue-100'}`}
+              >
+                👨 مرد
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -225,8 +260,8 @@ function Quiz() {
     )
   }
 
-  const question = questions[currentQuestion]
-  const progress = ((currentQuestion + 1) / questions.length) * 100
+  const question = filteredQuestions[currentQuestion]
+  const progress = ((currentQuestion + 1) / filteredQuestions.length) * 100
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
@@ -235,7 +270,7 @@ function Quiz() {
         <div className="mb-8 fade-in">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-semibold text-purple-600">
-              سوال {currentQuestion + 1} از {questions.length}
+              سوال {currentQuestion + 1} از {filteredQuestions.length}
             </span>
             <span className="text-sm font-semibold text-purple-600">
               {Math.round(progress)}%

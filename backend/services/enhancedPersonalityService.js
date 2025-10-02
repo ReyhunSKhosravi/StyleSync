@@ -565,7 +565,7 @@ const personalityTypes = {
 };
 
 // تابع تحلیل پیشرفته
-export function analyzePersonality(answers) {
+export function analyzePersonality(answers, gender = 'female') {
   const traits = {};
   let colorFamilyVotes = {};
 
@@ -619,7 +619,7 @@ export function analyzePersonality(answers) {
 
   const selectedPalette = colorPalettes[colorPaletteName];
 
-  return {
+  const result = {
     type: personalityType,
     name: personality.name,
     icon: personality.icon,
@@ -635,9 +635,9 @@ export function analyzePersonality(answers) {
     
     hair: personality.hair,
     
-    makeup: personality.makeup,
+    makeup: gender === 'female' ? personality.makeup : undefined,
     
-    hijab: personality.hijab,
+    hijab: gender === 'female' ? personality.hijab : undefined,
     
     accessories: personality.accessories,
     
@@ -649,6 +649,32 @@ export function analyzePersonality(answers) {
 
     glossary: fashionGlossary
   };
+
+  // اگر جنسیت مرد باشد، بخش مو را با مثال‌های مردانه تقویت کنیم
+  if (gender === 'male') {
+    result.hair = result.hair || {};
+    const maleHair = {
+      styles: [
+        { style: 'فید کم/متوسط', description: 'مدرن و تمیز؛ مناسب صورت‌های بیضی/گرد', products: ['پماد مات، اسپری فیکس'] },
+        { style: 'کوئیف یا پامپادور', description: 'حجم در بالا، اطراف کوتاه؛ استایل مردانه کلاسیک', products: ['پماد براق، سشوار'] },
+        { style: 'کراپ فرانسوی', description: 'مدرن و مینیمال؛ نگهداری آسان', products: ['کرم مو باف، واکس سبک'] },
+        { style: 'موج‌دار/فر طبیعی', description: 'طبیعی و جذاب؛ حجم متوسط نگه دارید', products: ['کرم فر، دیفیوزر'] },
+        { style: 'بوزکات', description: 'خیلی کوتاه و کاربردی؛ کم‌هزینه و خنک', products: ['کرم مرطوب‌کننده پوست سر'] }
+      ],
+      tips: [
+        'فرم صورت را بشناسید و بر اساس آن مدل انتخاب کنید',
+        'مرز خط ریش و گردن را مرتب نگه دارید',
+        'هر ۳-۴ هفته یکبار ترمیم کنید',
+        'محصولات مات برای استایل روزانه طبیعی‌ترند'
+      ]
+    };
+
+    // Merge
+    result.hair.styles = [...(result.hair.styles || []), ...maleHair.styles];
+    result.hair.tips = [...(result.hair.tips || []), ...maleHair.tips];
+  }
+
+  return result;
 }
 
 // ترجمه ویژگی‌ها به فارسی

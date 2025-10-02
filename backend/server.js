@@ -9,6 +9,7 @@ import {
   generatePersonalizedTips,
   suggestBrandsBasedOnTwitter 
 } from './services/twitterAnalysisService.js';
+import { generateStyleImages } from './services/imageService.js';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -114,14 +115,14 @@ const oldQuestions = [
 // تحلیل شخصیت و ارائه پیشنهادات (با تحلیل توییتر)
 app.post('/api/analyze', async (req, res) => {
   try {
-    const { answers, twitterUsername } = req.body;
+    const { answers, twitterUsername, gender } = req.body;
     
     if (!answers || !Array.isArray(answers)) {
       return res.status(400).json({ error: 'پاسخ‌ها نامعتبر است' });
     }
 
     // تحلیل تست شخصیت
-    let personality = analyzePersonality(answers);
+    let personality = analyzePersonality(answers, gender || 'female');
     
     // اگر یوزرنیم توییتر داده شده، تحلیل توییتر
     let twitterAnalysis = null;
@@ -154,11 +155,20 @@ app.post('/api/analyze', async (req, res) => {
       }
     }
 
+    // تولید/دریافت تصاویر استایل بر اساس نتیجه نهایی
+    let images = []
+    try {
+      images = await generateStyleImages(personality, gender || 'female', 4)
+    } catch (e) {
+      console.error('Image generation failed:', e)
+    }
+
     res.json({
       personality,
       twitterEnhanced: !!twitterAnalysis,
       enhancedRecommendations,
-      glossary: fashionGlossary
+      glossary: fashionGlossary,
+      images
     });
   } catch (error) {
     console.error('Error analyzing personality:', error);
