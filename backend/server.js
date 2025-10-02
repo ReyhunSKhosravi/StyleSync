@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { analyzePersonality, getStyleRecommendations } from './services/improvedPersonalityService.js';
-import { questions } from './data/questions.js';
+import { analyzePersonality } from './services/enhancedPersonalityService.js';
+import { improvedQuestions as questions, fashionGlossary } from './data/improvedQuestions.js';
 import { 
   analyzeTwitterProfile, 
   mergeTwitterAnalysisWithTest,
@@ -154,13 +154,11 @@ app.post('/api/analyze', async (req, res) => {
       }
     }
 
-    const recommendations = getStyleRecommendations(personality);
-
     res.json({
       personality,
-      recommendations,
       twitterEnhanced: !!twitterAnalysis,
-      enhancedRecommendations
+      enhancedRecommendations,
+      glossary: fashionGlossary
     });
   } catch (error) {
     console.error('Error analyzing personality:', error);
